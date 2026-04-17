@@ -1,4 +1,4 @@
-# TP Hend (duplicate adaptée de TP-RMI)
+# TP-RMI
 
 Implémentation complète du sujet `tp-rmi-enonce.pdf` avec Java RMI (Java 11, Maven).
 
