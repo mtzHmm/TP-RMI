@@ -12,12 +12,12 @@ public class TaskCallbackImpl extends UnicastRemoteObject implements TaskCallbac
     }
 
     @Override
-    public void onTaskCreated(TaskData data) {
-        System.out.println("Task created: " + data);
+    public void onTaskCreated(TaskData donnees) {
+        System.out.println("[CALLBACK] Nouvelle tâche créée : " + donnees);
     }
 
     @Override
-    public void onTaskCompleted(String taskId, String res) {
-        System.out.println("Task completed: " + taskId + " result=" + res);
+    public void onTaskCompleted(String idTache, String resultat) {
+        System.out.println("[CALLBACK] Tâche terminée [id=" + idTache + "] résultat=" + resultat);
     }
 }

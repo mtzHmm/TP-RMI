@@ -7,48 +7,48 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class TaskHandleImpl extends UnicastRemoteObject implements TaskHandle {
-    private final String taskId;
-    private final TaskData data;
-    private final TaskManagerImpl manager;
+    private final String idTache;
+    private final TaskData donnees;
+    private final TaskManagerImpl gestionnaire;
 
-    private volatile int progress = 0;
-    private volatile String state = "PENDING";
-    private volatile String result = "";
+    private volatile int progression = 0;
+    private volatile String etat = "WAITING";
+    private volatile String resultat = "";
 
-    public TaskHandleImpl(String taskId, TaskData data, TaskManagerImpl manager) throws RemoteException {
+    public TaskHandleImpl(String idTache, TaskData donnees, TaskManagerImpl gestionnaire) throws RemoteException {
         super();
-        this.taskId = taskId;
-        this.data = data;
-        this.manager = manager;
+        this.idTache     = idTache;
+        this.donnees     = donnees;
+        this.gestionnaire = gestionnaire;
     }
 
     @Override
     public synchronized void updateProgress(int percent) throws RemoteException {
         if (percent < 0 || percent > 100) {
-            throw new RemoteException("Progress must be between 0 and 100");
+            throw new RemoteException("La progression doit être entre 0 et 100");
         }
-        this.progress = percent;
-        this.state = percent == 0 ? "PENDING" : (percent < 100 ? "IN_PROGRESS" : "DONE");
+        this.progression = percent;
+        this.etat = percent == 0 ? "WAITING" : (percent < 100 ? "RUNNING" : "COMPLETED");
     }
 
     @Override
     public synchronized void complete(String result) throws RemoteException {
-        this.progress = 100;
-        this.state = "DONE";
-        this.result = result == null ? "" : result;
-        manager.notifyTaskCompleted(taskId, this.result);
+        this.progression = 100;
+        this.etat        = "COMPLETED";
+        this.resultat    = result == null ? "" : result;
+        gestionnaire.notifyTaskCompleted(idTache, this.resultat);
     }
 
     @Override
     public synchronized String getStatus() {
-        return "Task " + taskId + " (" + data.getTitle() + ") state=" + state + ", progress=" + progress + "%";
+        return "Tache " + idTache + " (" + donnees.getTitle() + ") etat=" + etat + ", progression=" + progression + "%";
     }
 
     public String getTaskId() {
-        return taskId;
+        return idTache;
     }
 
     public String getState() {
-        return state;
+        return etat;
     }
 }

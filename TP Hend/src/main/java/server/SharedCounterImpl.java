@@ -7,36 +7,36 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SharedCounterImpl extends UnicastRemoteObject implements SharedCounter {
-    private final String name;
-    private final AtomicInteger value = new AtomicInteger(0);
+    private final String nom;
+    private final AtomicInteger compteur = new AtomicInteger(0);
 
-    public SharedCounterImpl(String name) throws RemoteException {
+    public SharedCounterImpl(String nom) throws RemoteException {
         super();
-        this.name = name;
+        this.nom = nom;
     }
 
     @Override
     public void increment() {
-        value.incrementAndGet();
+        compteur.incrementAndGet();
     }
 
     @Override
     public void decrement() {
-        value.decrementAndGet();
+        compteur.decrementAndGet();
     }
 
     @Override
     public int getValue() {
-        return value.get();
+        return compteur.get();
     }
 
     @Override
     public void reset() {
-        value.set(0);
+        compteur.set(0);
     }
 
     @Override
     public String toString() {
-        return "SharedCounterImpl{" + "name='" + name + '\'' + ", value=" + value.get() + '}';
+        return "Compteur[nom='" + nom + "', valeur=" + compteur.get() + "]";
     }
 }

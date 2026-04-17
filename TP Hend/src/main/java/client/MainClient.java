@@ -9,22 +9,27 @@ import java.util.Arrays;
 public class MainClient {
     public static void main(String[] args) throws Exception {
         String host = args.length > 0 ? args[0] : "localhost";
-        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1099;
+        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1100;
 
-        ShapeFactory factory = (ShapeFactory) Naming.lookup("rmi://" + host + ":" + port + "/ShapeFactory");
+        ShapeFactory fabrique = (ShapeFactory) Naming.lookup("rmi://" + host + ":" + port + "/ShapeFactory");
 
-        System.out.println("Available shapes: " + Arrays.toString(factory.availableTypes()));
+        System.out.println("Formes disponibles : " + Arrays.toString(fabrique.availableTypes()));
 
-        Shape circle = factory.createShape("circle", 5.0);
-        Shape rectangle = factory.createShape("rectangle", 4.0, 6.0);
-        Shape triangle = factory.createShape("triangle", 3.0, 4.0, 5.0);
+        Shape cercle    = fabrique.createShape("circle",    7.0);
+        Shape rectangle = fabrique.createShape("rectangle", 3.0, 8.0);
+        Shape triangle  = fabrique.createShape("triangle",  5.0, 12.0, 13.0);
+        Shape pentagone = fabrique.createShape("pentagon",  4.0);
+        Shape hexagone  = fabrique.createShape("hexagon",   6.0);
 
-        print(circle);
-        print(rectangle);
-        print(triangle);
+        afficher(cercle);
+        afficher(rectangle);
+        afficher(triangle);
+        afficher(pentagone);
+        afficher(hexagone);
     }
 
-    private static void print(Shape shape) throws Exception {
-        System.out.printf("%s -> area=%.4f perimeter=%.4f%n", shape.describe(), shape.area(), shape.perimeter());
+    private static void afficher(Shape forme) throws Exception {
+        System.out.printf("%s -> aire=%.4f perimetre=%.4f%n",
+                forme.describe(), forme.area(), forme.perimeter());
     }
 }

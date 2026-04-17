@@ -8,30 +8,30 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class GameCallbackImpl extends UnicastRemoteObject implements GameCallback {
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private final String playerName;
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private final String nomJoueur;
 
-    public GameCallbackImpl(String playerName) throws RemoteException {
+    public GameCallbackImpl(String nomJoueur) throws RemoteException {
         super();
-        this.playerName = playerName;
+        this.nomJoueur = nomJoueur;
     }
 
     @Override
     public void onPlayerJoined(String playerName) {
-        log("PLAYER_JOINED", playerName);
+        journaliser("CONNEXION", playerName);
     }
 
     @Override
     public void onGameEvent(String eventMessage) {
-        log("NOTIF", eventMessage);
+        journaliser("EVENEMENT", eventMessage);
     }
 
     @Override
     public void onGameOver(String winner) {
-        log("GAME_OVER", "Winner: " + winner);
+        journaliser("FIN_PARTIE", "Gagnant : " + winner);
     }
 
-    private void log(String type, String message) {
-        System.out.printf("[%s] %s (%s): %s%n", LocalTime.now().format(FMT), type, playerName, message);
+    private void journaliser(String type, String message) {
+        System.out.printf("[%s] %-12s (%s) >> %s%n", LocalTime.now().format(FMT), type, nomJoueur, message);
     }
 }

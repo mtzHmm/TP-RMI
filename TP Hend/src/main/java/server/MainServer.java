@@ -12,27 +12,27 @@ import java.rmi.registry.Registry;
 
 public class MainServer {
     public static void main(String[] args) throws Exception {
-        int port = 1099;
+        int port = 1100;
 
         try {
             Registry registry = LocateRegistry.createRegistry(port);
-            System.out.println("RMI registry started on port " + port + " (" + registry + ")");
+            System.out.println("[TP Hend] Registre RMI démarré sur le port " + port);
         } catch (Exception ignored) {
-            System.out.println("RMI registry already running on port " + port);
+            System.out.println("[TP Hend] Registre RMI déjà actif sur le port " + port);
         }
 
         ShapeFactory shapeFactory = new ShapeFactoryImpl();
-        GameServer gameServer = new GameServerImpl();
+        GameServer gameServer   = new GameServerImpl();
         VectorService vectorService = new VectorServiceImpl();
         CounterService counterService = new CounterServiceImpl();
         TaskManager taskManager = new TaskManagerImpl();
 
-        Naming.rebind("rmi://localhost:" + port + "/ShapeFactory", shapeFactory);
-        Naming.rebind("rmi://localhost:" + port + "/GameServer", gameServer);
-        Naming.rebind("rmi://localhost:" + port + "/VectorService", vectorService);
+        Naming.rebind("rmi://localhost:" + port + "/ShapeFactory",   shapeFactory);
+        Naming.rebind("rmi://localhost:" + port + "/GameServer",     gameServer);
+        Naming.rebind("rmi://localhost:" + port + "/VectorService",  vectorService);
         Naming.rebind("rmi://localhost:" + port + "/CounterService", counterService);
-        Naming.rebind("rmi://localhost:" + port + "/TaskManager", taskManager);
+        Naming.rebind("rmi://localhost:" + port + "/TaskManager",    taskManager);
 
-        System.out.println("Services bound: ShapeFactory, GameServer, VectorService, CounterService, TaskManager");
+        System.out.println("[TP Hend] Services enregistrés : ShapeFactory, GameServer, VectorService, CounterService, TaskManager");
     }
 }

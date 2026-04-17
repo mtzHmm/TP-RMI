@@ -8,18 +8,21 @@ import java.rmi.Naming;
 public class CounterClient {
     public static void main(String[] args) throws Exception {
         String host = args.length > 0 ? args[0] : "localhost";
-        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1099;
+        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1100;
 
         CounterService service = (CounterService) Naming.lookup("rmi://" + host + ":" + port + "/CounterService");
 
-        SharedCounter c1 = service.createCounter("counter-1");
-        SharedCounter c2 = service.createCounter("counter-2");
+        SharedCounter compteurA = service.createCounter("compteur-A");
+        SharedCounter compteurB = service.createCounter("compteur-B");
 
-        service.atomicIncrement(c1, 5);
-        service.atomicIncrement(c2, 7);
+        service.atomicIncrement(compteurA, 10);
+        service.atomicIncrement(compteurB, 3);
 
-        System.out.println("Counter-1 value: " + c1.getValue());
-        System.out.println("Counter-2 value: " + c2.getValue());
-        System.out.println("Sum via service: " + service.sum(c1, c2));
+        System.out.println("Valeur compteur-A : " + compteurA.getValue());
+        System.out.println("Valeur compteur-B : " + compteurB.getValue());
+        System.out.println("Somme via service : " + service.sum(compteurA, compteurB));
+
+        compteurA.decrement();
+        System.out.println("Valeur compteur-A après décrement : " + compteurA.getValue());
     }
 }

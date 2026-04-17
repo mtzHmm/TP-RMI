@@ -9,35 +9,35 @@ import java.util.concurrent.CountDownLatch;
 public class GameSimulationClient {
     public static void main(String[] args) throws Exception {
         String host = args.length > 0 ? args[0] : "localhost";
-        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1099;
+        int port = args.length > 1 ? Integer.parseInt(args[1]) : 1100;
 
-        GameServer server = (GameServer) Naming.lookup("rmi://" + host + ":" + port + "/GameServer");
+        GameServer serveur = (GameServer) Naming.lookup("rmi://" + host + ":" + port + "/GameServer");
 
-        int players = 3;
-        CountDownLatch done = new CountDownLatch(players);
+        int nbJoueurs = 4;
+        CountDownLatch fin = new CountDownLatch(nbJoueurs);
 
-        for (int i = 1; i <= players; i++) {
-            String playerName = "Player-" + i;
+        for (int i = 1; i <= nbJoueurs; i++) {
+            String nomJoueur = "Joueur-" + i;
             new Thread(() -> {
                 try {
-                    GameCallbackImpl cb = new GameCallbackImpl(playerName);
-                    String playerId = server.joinGame(playerName, cb);
+                    GameCallbackImpl cb = new GameCallbackImpl(nomJoueur);
+                    String idJoueur = serveur.joinGame(nomJoueur, cb);
                     Random rnd = new Random();
-                    for (int n = 1; n <= 2; n++) {
-                        server.sendAction(playerId, "action-" + n + "-" + rnd.nextInt(100));
-                        Thread.sleep(300L);
+                    for (int n = 1; n <= 3; n++) {
+                        serveur.sendAction(idJoueur, "action-" + n + "-" + rnd.nextInt(100));
+                        Thread.sleep(200L);
                     }
-                    Thread.sleep(2000L);
-                    server.leaveGame(playerId);
+                    Thread.sleep(1500L);
+                    serveur.leaveGame(idJoueur);
                 } catch (Exception e) {
-                    System.err.println("Simulation error for " + playerName + ": " + e.getMessage());
+                    System.err.println("Erreur simulation pour " + nomJoueur + " : " + e.getMessage());
                 } finally {
-                    done.countDown();
+                    fin.countDown();
                 }
-            }, playerName + "-thread").start();
+            }, nomJoueur + "-thread").start();
         }
 
-        done.await();
-        System.out.println("Simulation finished. Remaining players: " + server.getPlayerCount());
+        fin.await();
+        System.out.println("Simulation terminée. Joueurs restants : " + serveur.getPlayerCount());
     }
 }

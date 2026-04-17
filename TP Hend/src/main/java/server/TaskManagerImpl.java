@@ -16,66 +16,66 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TaskManagerImpl extends UnicastRemoteObject implements TaskManager {
-    private final Map<String, TaskHandleImpl> tasksById = new ConcurrentHashMap<>();
-    private final CopyOnWriteArrayList<TaskCallback> subscribers = new CopyOnWriteArrayList<>();
+    private final Map<String, TaskHandleImpl> tachesParId = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<TaskCallback> abonnes = new CopyOnWriteArrayList<>();
 
     public TaskManagerImpl() throws RemoteException {
         super();
     }
 
     @Override
-    public TaskHandle createTask(TaskData data) throws RemoteException {
-        if (data == null) {
-            throw new RemoteException("TaskData cannot be null");
+    public TaskHandle createTask(TaskData donnees) throws RemoteException {
+        if (donnees == null) {
+            throw new RemoteException("Les données de tâche ne peuvent pas être null");
         }
 
-        String taskId = UUID.randomUUID().toString();
-        TaskHandleImpl handle = new TaskHandleImpl(taskId, data, this);
-        tasksById.put(taskId, handle);
+        String idTache = UUID.randomUUID().toString();
+        TaskHandleImpl handle = new TaskHandleImpl(idTache, donnees, this);
+        tachesParId.put(idTache, handle);
 
-        notifyTaskCreated(data);
+        notifierTacheCreee(donnees);
         return handle;
     }
 
     @Override
     public void subscribe(TaskCallback cb) throws RemoteException {
         if (cb == null) {
-            throw new RemoteException("Callback cannot be null");
+            throw new RemoteException("Le callback ne peut pas être null");
         }
-        subscribers.addIfAbsent(cb);
+        abonnes.addIfAbsent(cb);
     }
 
     @Override
     public List<String> listPendingTasks() {
-        List<String> pending = new ArrayList<>();
-        for (TaskHandleImpl handle : tasksById.values()) {
-            if (!"DONE".equals(handle.getState())) {
-                pending.add(handle.getTaskId());
+        List<String> enAttente = new ArrayList<>();
+        for (TaskHandleImpl handle : tachesParId.values()) {
+            if (!"COMPLETED".equals(handle.getState())) {
+                enAttente.add(handle.getTaskId());
             }
         }
-        return pending;
+        return enAttente;
     }
 
-    void notifyTaskCompleted(String taskId, String result) {
-        Iterator<TaskCallback> it = subscribers.iterator();
+    void notifyTaskCompleted(String idTache, String resultat) {
+        Iterator<TaskCallback> it = abonnes.iterator();
         while (it.hasNext()) {
             TaskCallback cb = it.next();
             try {
-                cb.onTaskCompleted(taskId, result);
+                cb.onTaskCompleted(idTache, resultat);
             } catch (RemoteException e) {
-                subscribers.remove(cb);
+                abonnes.remove(cb);
             }
         }
     }
 
-    private void notifyTaskCreated(TaskData data) {
-        Iterator<TaskCallback> it = subscribers.iterator();
+    private void notifierTacheCreee(TaskData donnees) {
+        Iterator<TaskCallback> it = abonnes.iterator();
         while (it.hasNext()) {
             TaskCallback cb = it.next();
             try {
-                cb.onTaskCreated(data);
+                cb.onTaskCreated(donnees);
             } catch (RemoteException e) {
-                subscribers.remove(cb);
+                abonnes.remove(cb);
             }
         }
     }

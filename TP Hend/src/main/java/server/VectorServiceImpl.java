@@ -13,30 +13,30 @@ public class VectorServiceImpl extends UnicastRemoteObject implements VectorServ
 
     @Override
     public double magnitude(Vector2D v) throws RemoteException {
-        validate(v);
+        valider(v);
         return Math.sqrt(v.x * v.x + v.y * v.y);
     }
 
     @Override
     public Vector2D normalize(Vector2D v) throws RemoteException {
-        validate(v);
-        double mag = magnitude(v);
-        if (mag == 0.0) {
-            throw new RemoteException("Cannot normalize zero vector");
+        valider(v);
+        double norme = magnitude(v);
+        if (norme == 0.0) {
+            throw new RemoteException("Impossible de normaliser un vecteur nul");
         }
-        return new Vector2D(v.x / mag, v.y / mag);
+        return new Vector2D(v.x / norme, v.y / norme);
     }
 
     @Override
     public Vector2D add(Vector2D a, Vector2D b) throws RemoteException {
-        validate(a);
-        validate(b);
+        valider(a);
+        valider(b);
         return new Vector2D(a.x + b.x, a.y + b.y);
     }
 
-    private void validate(Vector2D v) throws RemoteException {
+    private void valider(Vector2D v) throws RemoteException {
         if (v == null) {
-            throw new RemoteException("Vector cannot be null");
+            throw new RemoteException("Le vecteur ne peut pas être null");
         }
     }
 }
