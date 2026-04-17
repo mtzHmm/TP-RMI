@@ -1,14 +1,6 @@
 # TP Hend
 
-Variante du TP-RMI (Java 11, Maven) avec légères modifications.
 
-## Différences par rapport au projet original
-
-- Port RMI : **1100** (au lieu de 1099)
-- Nouvelles formes : **Hexagone** (en plus de circle, rectangle, triangle, pentagon)
-- Noms de variables et messages en français dans les implémentations serveur
-- États des tâches : WAITING / RUNNING / COMPLETED (au lieu de PENDING / IN_PROGRESS / DONE)
-- Clients de démonstration enrichis (plus de formes, plus de joueurs, plus de tâches)
 
 ## Structure
 
@@ -19,14 +11,14 @@ Variante du TP-RMI (Java 11, Maven) avec légères modifications.
 ## Compiler
 
 ```bash
-cd "TP Hend"
+
 mvn compile
 ```
 
 ## Lancer le serveur
 
 ```bash
-cd "TP Hend"
+
 mvn -q exec:java -Dexec.mainClass="server.MainServer"
 ```
 
